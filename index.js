@@ -1,6 +1,8 @@
 const express = require('express')
 const cors = require('cors');
 const rutasUsuarios=require('./routes/usuarios.routes');
+const rutasAuth=require('./routes/auth.routes');
+const { dbConnection } = require('./database/config');
 require('dotenv').config()
 const app = express();
 const PORT = process.env.PORT;
@@ -14,11 +16,12 @@ app.get("/", function (req, res) {
     res.send("API v1.0");
 });
 
-(()=>{
-    //funcion que se ejecuta al entrar en el archivo index.js
-    const rutaBase='/api/v1';
+(async()=>{
+    // Funcion que se ejecuta al entrar en el archivo index.js
+    await dbConnection();
+    const rutaBase = '/api/v1';
     app.use(rutaBase, rutasUsuarios);
+    app.use(rutaBase, rutasAuth);
 })();
-
 
 app.listen(PORT, () => console.log(`La applicacion esta corriendo en el puerto ${PORT}!`));
